@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <canvas id="canvas" width="800" height="500"></canvas>
+        <input type="text" id="from" value="0">
+        <input type="text" id="to" value="8">
+        <button id="draw">Draw</button>
+        <button id="render">Render</button>
+        <img id="canvas-img" src="" alt="Canvas Image">
+        <input type="file" id="excelFile" />
+<!-- <script src="https://cdn.jsdelivr.net/npm/fabric"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  var originalFontSize = 16;
+  const canvas = new fabric.Canvas('canvas');
+  const app = {
+    options: {
+      originalFontSize: Number,
+      _data: [],
+      _drawArea: null
+    },
+    data: [],
+    drawArea: null,
+    init: function() {
+      data = this.options._data;
+      drawArea = this.options._drawArea;
+    },
+    start: function() {
+      if (drawArea === null) {
+        console.error('drawArea is null. Did you forget to call init?');
+        return;
+      }
+      const person = this.DrawPerson();
+      // Draw all use cases
+      
+      data.slice(0,4).forEach((item) => {
+        uc = this.DrawUseCase(item.x, item.y, item.name, 'rectangle');
+        ConnectObject(person, uc);
+      });
+    },
+    draw: function(_from, _to) {
+      drawArea.clear().renderAll();
+      const person = this.DrawPerson();
+      // Draw all use cases
+      lastX = 200;
+      lastY = 0;
+      data.slice(_from, _to).forEach((item) => {
+        lastY += 100;
+        uc = this.DrawUseCase(lastX, lastY, item.name, 'rectangle');
+        ConnectObject(person, uc);
+      });
+      drawArea.renderAll();
+    },
+    clear: () => {},
+    end: () => {},
+    
+    DrawPerson: function() {
+      centerX = drawArea.width / 2;
+      centerY = drawArea.height / 2;
+      
+      // Create the head
+      const head = new fabric.Circle({
+        left: 80,
+        top: 100,
+        radius: 20,
+        fill: '#f0f0f0',
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+
+      // Create the body
+      const body = new fabric.Line([100, 140, 100, 200], {
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+
+      // Create the arms
+      const leftArm = new fabric.Line([100, 150, 80, 180], {
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+      const rightArm = new fabric.Line([100, 150, 120, 180], {
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+
+      // Create the legs
+      const leftLeg = new fabric.Line([100, 200, 80, 240], {
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+      const rightLeg = new fabric.Line([100, 200, 120, 240], {
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+
+      // Group all parts together
+      const person = new fabric.Group([head, body, leftArm, rightArm, leftLeg, rightLeg], {
+        left: 50,
+        top: 100,
+      });
+
+      drawArea.add(person);    
+      return person;
+    },
+
+    DrawUseCase: function (_left, _top, _text = 'Use Case', shape = 'ellipse'){
+      let shapeObj = null;
+      let textLeft = 0;
+      let textTop = 0;
+      if(shape === 'ellipse'){
+        shapeObj = DrawEllipse(_left, _top);
+        textLeft = shapeObj.left + shapeObj.rx;
+        textTop = shapeObj.top + shapeObj.ry;
+      } else if(shape === 'rectangle'){
+        shapeObj = DrawRectangle(_left, _top);
+        textLeft = shapeObj.left + shapeObj.width / 2;
+        textTop = shapeObj.top + shapeObj.height / 2;
+      }
+      
+      var text = new fabric.Textbox(_text, {
+        originX: 'center',
+        originY: 'center',
+        left: textLeft, // Same as ellipse center X
+        top: textTop, // Same as ellipse center Y
+        fontSize: originalFontSize,
+        fill: 'black',
+        width: shapeObj.width - 10,
+        textAlign: 'center',
+        //height: 50,
+        //overflow: 'ellipse' // Truncate the text with an ellipsis when it overflows the text box
+      });
+      
+      var group = new fabric.Group([shapeObj, text], {
+        left: _left,
+        top: _top,
+        lockUniScaling: true
+      });
+      group.on('scaling', function() {
+        const scale = Math.min(this.scaleX, this.scaleY);
+        const objects = this.getObjects();
+        const textInObject = objects[1];
+        textInObject.fontSize = originalFontSize / scale;
+        textInObject.scaleX = 1;
+        textInObject.scaleY = 1;
+        textInObject.left = textInObject.left / scale;
+        textInObject.top = textInObject.top / scale;
+      });
+      drawArea.add(group);
+      return group;
+    }
+  }
+  document.getElementById('excelFile').addEventListener('change', function(e) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var data = new Uint8Array(e.target.result);
+      var workbook = XLSX.read(data, {type: 'array'});
+
+      // Get the first worksheet
+      //var sheet_name_list = workbook.SheetNames;
+      // var worksheet = workbook.Sheets[sheet_name_list[0]];
+      var worksheet = workbook.Sheets['Requirements'];
+
+      // // Convert the worksheet to JSON
+      // var data = XLSX.utils.sheet_to_json(worksheet);
+      
+      // Get the range of cells for the table
+      var startCell = 'B2';
+      var endCell = 'D' + worksheet['!ref'].split(':')[1].replace(/[A-Z]/g, ''); // Get the last row number of column D
+      var range = XLSX.utils.decode_range(startCell + ':' + endCell);
+
+      // Get the cells in the range
+      var tableData = [];
+      for(var R = range.s.r; R <= range.e.r; ++R) {
+        var rowData = [];
+        for(var C = range.s.c; C <= range.e.c; ++C) {
+          var cell_address = {c:C, r:R};
+          var cell_ref = XLSX.utils.encode_cell(cell_address);
+          if(worksheet[cell_ref]) {
+            rowData.push(worksheet[cell_ref].v);
+          } else {
+            rowData.push(null);          
+          }
+        }
+        tableData.push(rowData);
+      }
+
+      lastX = 200;
+      lastY = 0;
+      const lst = tableData.filter((item) => {
+        return item[0] !== null && !isNaN(item[0]);
+      }).map((item) => {
+          lastY += 100;
+          return {
+            id: item[0],
+            name: item[2],
+            x: lastX,
+            y: lastY
+          };
+        return;
+      });
+
+      app.options = {
+        originalFontSize: 16,
+        _data: lst,
+        _drawArea: canvas
+      };
+      app.init();
+      // app.start();
+    };
+    reader.readAsArrayBuffer(this.files[0]);
+  }, false);
+  // Mock data:
+  // lst = [{
+  //   id: 1,
+  //   name: 'Use Case 1 are very very long and i want it wrap in an ellipse',
+  //   x: 200,
+  //   y: 100
+  // }, {
+  //   id: 2,
+  //   name: 'Use Case 2',
+  //   x: 200,
+  //   y: 200
+  // }, {
+  //   id: 3,
+  //   name: 'Use Case 3',
+  //   x: 200,
+  //   y: 300
+  // }, {
+  //   id: 4,
+  //   name: 'Use Case 4',
+  //   x: 200,
+  //   y: 400
+  // }];
+
+  document.getElementById('draw').addEventListener('click',() => {
+    const from = document.getElementById('from').value;
+    const to = document.getElementById('to').value;
+    app.draw(from, to);
+  });
+  
+  document.getElementById('render').addEventListener('click',() => {
+    var dataURL = canvas.toDataURL({
+      format: 'png',
+      quality: 1
+    });
+    var imgElement = document.getElementById('canvas-img');    
+    imgElement.src = dataURL;
+
+    // Or, download the image as a file
+    // var link = document.createElement('a');
+    // link.download = 'canvas.png';
+    // link.href = dataURL;
+    // link.click();
+  });
+
+  function ConnectObject(person, useCase){
+    var personCenterX = person.left + person.width;
+    var personCenterY = person.top + person.height / 2;
+
+    var ellipseCenterX = useCase.left;
+    var ellipseCenterY = useCase.top + useCase.height / 2;
+    
+    var line = new fabric.Line([personCenterX, personCenterY, ellipseCenterX, ellipseCenterY], {
+        stroke: 'black',
+        strokeWidth: 1,
+    });
+    canvas.add(line);
+
+    person.on('moving', function () {
+      line.set({ x1: person.left + person.width / 2, y1: person.top + person.height / 2 });
+      canvas.renderAll();
+    });
+
+    useCase.on('moving', function () {
+      var newHeight = this.height * this.scaleY;
+      line.set({x2: useCase.left, y2: useCase.top + newHeight / 2});
+      canvas.renderAll();
+    });
+
+    useCase.on('scaling', function () {
+      var newHeight = this.height * this.scaleY;
+      line.set({x2: this.left, y2: this.top + newHeight / 2});
+      canvas.renderAll();
+    });
+  }
+
+  
+
+  function DrawEllipse(_left, _top){
+    var ellipse = new fabric.Ellipse({
+      left: _left,
+      top: _top,
+      rx: 50, // Horizontal radius
+      ry: 30, // Vertical radius
+      fill: 'white',   
+      stroke: 'black', 
+      strokeWidth: 1, 
+    });
+    return ellipse;
+  }
+
+  function DrawRectangle(_left, _top){
+    var rect = new fabric.Rect({
+      left: _left,
+      top: _top,
+      width: 100,
+      height: 60,
+      rx: 10,
+      ry: 10,
+      fill: 'white',
+      stroke: 'black',
+      strokeWidth: 1,
+    });
+    return rect;
+
+  }
+
+
+</script>
+        <script src="" async defer>
+          
+        </script>
+    </body>
+</html>
