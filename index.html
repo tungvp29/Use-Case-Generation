@@ -4,42 +4,266 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <title></title>
+      <meta name="description" content="">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="style.css">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
     </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        <canvas id="canvas" width="800" height="500"></canvas>
-        <input type="text" id="from" value="0">
-        <input type="text" id="to" value="8">
-        <button id="draw">Draw</button>
-        <button id="render">Render</button>
-        <img id="canvas-img" src="" alt="Canvas Image">
-        <input type="file" id="excelFile" />
-<!-- <script src="https://cdn.jsdelivr.net/npm/fabric"></script> -->
+  <body>
+      <!--[if lt IE 7]>
+          <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+      <![endif]-->
+      <section id="presentation" class="container mb-3">
+        <div class="row">
+          <div id="draw-area" class="col-12 col-xxl-6">
+            <div class="row">
+              <div class="col-12">
+                <h2>Draw Area</h2>
+              </div>
+            </div>
+            <div class="row">
+                <canvas id="canvas" width="636" height="550"></canvas>
+            </div>
+            <p class="fst-italic">(Hold Shift to move around)</p>
+          </div>
+          <div id="render-area" class="col-12 col-xxl-6">
+            <div class="row">
+              <div class="col-12">
+                <h2>Render Area</h2>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <img id="canvas-img" class="" src="OIG4.jpg" alt="Image from canvas, check render to automate transfrom canvas to image">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="action" class="container mb-3">
+        <div class="row mb-3">
+          <div class="col-12">
+            <label for="excelFile">Input file data</label>
+            <input type="file" id="excelFile" class="form-control"/>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6 col-lg-3">
+            <div class="input-group">
+              <label for="from" class="input-group-text col-3">From</label>
+              <input type="number" name="" id="from" value="0" class="form-control">
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="input-group">
+              <label for="to" class="input-group-text col-3">To</label>
+              <input type="number" name="" id="to" value="8" class="form-control">
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="input-group">
+              <label for="uc-per-pic" class="input-group-text col-7">Usecase per picture</label>
+              <input type="number" name="" id="uc-per-pic" value="8" class="form-control">
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <!-- <label for="">Current draw: <span id="current-draw">0</span></label> -->
+            <div class="input-group">
+              <label for="current-draw" class="input-group-text col-7">Current draw</label>
+              <input type="text" disabled name="" id="current-draw" value="0" class="form-control">
+            </div>
+
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-4">
+            <button id="draw" class="btn btn-primary">Draw</button>
+            <button id="draw-next" class="btn btn-secondary" data-from="" data-to="">Draw next</button>
+            <button id="draw-prev" class="btn btn-secondary" data-from="" data-to="">Draw previous</button>
+          </div>
+          <div class="col-4">
+            <div class="input-group mb-3">
+              <button id="render" class="btn btn-info">Render</button>
+              <div class="input-group-text">
+                <input id="chk-render-direct" class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
+              </div>
+            </div>
+            
+          </div>
+          <div class="col-4">
+            <button id="render" class="btn btn-secondary">Export</button>
+          </div>
+        </div>
+      </section>
+      <section id="configuration" class="container mb-3">
+        <div class="row">
+          <div id="uc-size" class="col-12 col-lg-6">
+            <label for="uc-size">Use-case Size</label>
+            <div class="input-group">
+              <label for="uc-width" class="input-group-text col-5">Use-case Width</label>
+              <input type="number" name="" id="uc-width" value="200" class="form-control">
+            </div>
+            <div class="input-group">
+              <label for="uc-height" class="input-group-text col-5">Use-case Height</label>
+              <input type="number" name="" id="uc-height" value="40" class="form-control">
+            </div>
+            <div class="input-group">
+              <label for="uc-distance" class="input-group-text col-5">Distance between 2 UC</label>
+              <input type="number" name="" id="uc-distance" value="20" class="form-control">
+            </div>
+            <div class="input-group">
+              <label for="uc-person-distance" class="input-group-text col-5">Distance between UC and person</label>
+              <input type="number" name="" id="uc-person-distance" value="100" class="form-control">
+            </div>
+          </div>
+          <div id="uc-shape" class="col-12 col-lg-6">
+            <div id="uc-shape">
+              <label for="uc-shape-selector">Use-case shape</label>
+              <div class="input-group">
+                <select name="" id="uc-shape-selector" class="form-control">
+                  <option value="rectangle">Rectangle</option>
+                  <option value="ellipse">Ellipse</option>
+                </select>
+              </div>
+            </div>
+            <div id="person-shape">
+              <label for="person-shape-selector">Person shape</label>
+              <div class="input-group">
+                <select name="" id="person-shape-selector" class="form-control">
+                  <option value="thin">Thin body</option>
+                  <option value="bigger">Bigger body</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div id="left-right-layout" class="col-12">
+          <label for="left-right-layout">Left-Right Layout</label>
+          <select name="" id="left-right-layout-selector" class="form-control">
+            <option value="left">Left side</option>
+            <option value="right" >Right side</option>
+            <option value="both" selected>Both side</option>
+          </select>
+        </div>
+        <div id="render-layout" class="col-12">
+          <label for="render-layout">Render Layout</label>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="chkRenderObjectOnly" checked>
+            <label class="form-check-label" for="chkRenderObjectOnly">
+              Only render the objects area in canvas
+            </label>
+          </div>
+        </div>
+      </section>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-  var originalFontSize = 16;
+  var originalFontSize = 14;
+  var panning = false;
+  var lastPosX = 0;
+  var lastPosY = 0;
   const canvas = new fabric.Canvas('canvas');
+
+  canvas.on('mouse:down', function (e) {
+      if (e.e.shiftKey) {
+          panning = true;
+          lastPosX = e.e.clientX;
+          lastPosY = e.e.clientY;
+      }
+  });
+
+  canvas.on('mouse:move', function (e) {
+      if (panning && e.e.shiftKey) {
+          var delta = new fabric.Point(e.e.clientX - lastPosX, e.e.clientY - lastPosY);
+          canvas.relativePan(delta);
+          lastPosX = e.e.clientX;
+          lastPosY = e.e.clientY;
+          console.log(canvas.width, canvas.height);
+      }
+      
+  });
+
+  canvas.on('mouse:up', function (e) {
+      panning = false;
+      lastPosX = 0;
+      lastPosY = 0;
+  });
+
+  function resizeCanvas() {
+    canvas.setWidth(document.getElementById('draw-area').offsetWidth);
+    canvas.setHeight(document.getElementById('draw-area').offsetHeight);
+    canvas.renderAll();
+  }
+
+  // Call resizeCanvas at the start and whenever the window is resized
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
   const app = {
     options: {
       originalFontSize: Number,
       _data: [],
-      _drawArea: null
+      _drawArea: null,
+      drawButton: {
+        btnDrawStart: '',
+        btnDrawNext: '',
+        btnDrawPrev: '',
+        showDrawCurrent: '',
+      },
+      useCase: {
+        size: {
+          width: 200,
+          height: 60,
+          distance: 100,
+          useCasePersonDistance: 200,
+        },
+        shape: 'rectangle',
+        ucPerPic: 8,
+        currentDraw: '',
+      },
+      person: {
+        shape: 'thin',
+      },
+      arrowSize: Number,
+      layout: 'right' | 'left' | 'both',
     },
     data: [],
     drawArea: null,
+    buttons: {
+      drawStart: Element,
+      drawNext: Element,
+      drawPrev: Element,
+      drawCurrent: Element,
+    },
     init: function() {
       data = this.options._data;
       drawArea = this.options._drawArea;
+      this.options.arrowSize = this.options.arrowSize || 10;
+      this.options.useCase.size.width = this.options.useCase.size.width || 200;
+      this.options.useCase.size.height = this.options.useCase.size.height || 60;
+      this.options.useCase.size.distance = this.options.useCase.size.distance || 50;
+      this.options.useCase.size.useCasePersonDistance = this.options.useCase.size.useCasePersonDistance || 200;
+      this.options.layout = this.options.layout || 'both';
+      this.options.useCase.shape = this.options.useCase.shape || 'rectangle';
+      this.options.useCase.ucPerPic = this.options.useCase.ucPerPic || 8;
+      this.options.person.shape = this.options.person.shape || 'thin';
+      originalFontSize = this.options.originalFontSize;
+      buttons = {
+        drawStart: document.getElementById(this.options.drawButton.btnDrawStart),
+        drawNext: document.getElementById(this.options.drawButton.btnDrawNext),
+        drawPrev: document.getElementById(this.options.drawButton.btnDrawPrev),
+        drawCurrent: document.getElementById(this.options.drawButton.showDrawCurrent),
+      };
     },
     start: function() {
       if (drawArea === null) {
@@ -48,32 +272,63 @@
       }
       const person = this.DrawPerson();
       // Draw all use cases
-      
       data.slice(0,4).forEach((item) => {
-        uc = this.DrawUseCase(item.x, item.y, item.name, 'rectangle');
+        uc = this.DrawUseCase(item.x, item.y, item.name, this.options.useCase.shape);
         ConnectObject(person, uc);
       });
     },
     draw: function(_from, _to) {
+      _from = parseInt(_from);
+      _to = parseInt(_to);
       drawArea.clear().renderAll();
-      const person = this.DrawPerson();
-      // Draw all use cases
-      lastX = 200;
-      lastY = 0;
-      data.slice(_from, _to).forEach((item) => {
-        lastY += 100;
-        uc = this.DrawUseCase(lastX, lastY, item.name, 'rectangle');
-        ConnectObject(person, uc);
-      });
+      // Calculate position for person and use cases
+      const calculatedPosition = this.CalculatePosition(_from, _to);
+      let person;
+      if (this.options.person.shape === 'bigger'){
+        // const person = this.DrawBiggerPerson(calculatedPosition.person.x, calculatedPosition.person.y);
+        person = this.DrawBiggerPerson(calculatedPosition.person.x, calculatedPosition.person.y);
+      } else if (this.options.person.shape === 'thin'){
+        person = this.DrawPerson(calculatedPosition.person);
+      }
+
+      ucStartX1 = calculatedPosition.ucStartPos.x1;
+      ucStartY1 = calculatedPosition.ucStartPos.y1;
+      // Draw all use cases from _from to _to and connect them to person object by arrow line
+      if (this.options.layout === 'both'){
+        ucStartX2 = calculatedPosition.ucStartPos.x2;
+        ucStartY2 = calculatedPosition.ucStartPos.y2;
+        if (this.options.drawButton.showDrawCurrent !== ''){
+          buttons.drawCurrent.innerHTML = `${_from} - ${_to}`;
+        }
+
+        const _mid = Math.ceil((_to + _from) / 2);
+        data.slice(_from, _mid).forEach((item) => {
+          ucStartY1 += this.options.useCase.size.height + this.options.useCase.size.distance;
+          uc = this.DrawUseCase(ucStartX1, ucStartY1, item.name, this.options.useCase.shape);
+          this.ConnectObjectByArrow(person, uc);
+        });
+        data.slice(_mid, _to).forEach((item) => {
+          ucStartY2 += this.options.useCase.size.height + this.options.useCase.size.distance;
+          uc = this.DrawUseCase(ucStartX2, ucStartY2, item.name, this.options.useCase.shape);
+          this.ConnectObjectByArrow(person, uc);
+        });
+      } else {
+        data.slice(_from, _to).forEach((item) => {
+          ucStartY1 += this.options.useCase.size.height + this.options.useCase.size.distance;
+          uc = this.DrawUseCase(ucStartX1, ucStartY1, item.name, this.options.useCase.shape);
+          this.ConnectObjectByArrow(person, uc);
+        });
+      }
+      this.UpdateButtons(_from, _to);
+      
       drawArea.renderAll();
     },
-    clear: () => {},
+    clear: () => {
+      drawArea.clear().renderAll();
+    },
     end: () => {},
     
-    DrawPerson: function() {
-      centerX = drawArea.width / 2;
-      centerY = drawArea.height / 2;
-      
+    DrawPerson: function(pos) {
       // Create the head
       const head = new fabric.Circle({
         left: 80,
@@ -112,24 +367,112 @@
 
       // Group all parts together
       const person = new fabric.Group([head, body, leftArm, rightArm, leftLeg, rightLeg], {
-        left: 50,
-        top: 100,
+        left: pos.x,
+        top: pos.y,
       });
 
-      drawArea.add(person);    
+      drawArea.add(person);
       return person;
     },
+    DrawBiggerPerson: function(x, y) {
+      var head = new fabric.Circle({
+          left: x,
+          top: y,
+          radius: 30,
+          fill: '#f0f0f0',
+          stroke: 'black',
+          strokeWidth: 1,
+          originX: 'center',
+          originY: 'center'
+      });
 
+      var body = new fabric.Rect({
+          left: x,
+          top: y + 60,
+          width: 60,
+          height: 60,
+          fill: '#f0f0f0',
+          stroke: 'black',
+          strokeWidth: 1,
+          originX: 'center',
+          originY: 'center'
+      });
+
+      var leftArm = new fabric.Rect({
+          left: x - 40,
+          top: y + 60,
+          width: 20,
+          height: 60,
+          fill: '#f0f0f0',
+          stroke: 'black',
+          strokeWidth: 1,
+          originX: 'center',
+          originY: 'center'
+      });
+
+      var rightArm = new fabric.Rect({
+          left: x + 40,
+          top: y + 60,
+          width: 20,
+          height: 60,
+          fill: '#f0f0f0',
+          stroke: 'black',
+          strokeWidth: 1,
+          originX: 'center',
+          originY: 'center'
+      });
+
+      var leftLeg = new fabric.Rect({
+          left: x - 15,
+          top: y + 120,
+          width: 30,
+          height: 60,
+          fill: '#f0f0f0',
+          stroke: 'black',
+          strokeWidth: 1,
+          originX: 'center',
+          originY: 'center'
+      });
+
+      var rightLeg = new fabric.Rect({
+          left: x + 15,
+          top: y + 120,
+          width: 30,
+          height: 60,
+          fill: '#f0f0f0',
+          stroke: 'black',
+          strokeWidth: 1,
+          originX: 'center',
+          originY: 'center'
+      });
+      var person = new fabric.Group([head, body, leftArm, rightArm, leftLeg, rightLeg], {
+          left: x-30,
+          top: y
+      });
+      
+      drawArea.add(person);
+      return person;
+    },
     DrawUseCase: function (_left, _top, _text = 'Use Case', shape = 'ellipse'){
+      centerX = drawArea.width / 2;
+      centerY = drawArea.height / 2;
+      if(this.options.layout === 'left'){
+        centerX = drawArea.width / 4;
+      } else if(this.options.layout === 'right'){
+        centerX = drawArea.width * 3 / 4;
+      } else if(this.options.layout === 'both'){
+        centerX = drawArea.width / 2;
+      }
+
       let shapeObj = null;
       let textLeft = 0;
       let textTop = 0;
       if(shape === 'ellipse'){
-        shapeObj = DrawEllipse(_left, _top);
+        shapeObj = this.DrawEllipse(_left, _top);
         textLeft = shapeObj.left + shapeObj.rx;
         textTop = shapeObj.top + shapeObj.ry;
-      } else if(shape === 'rectangle'){
-        shapeObj = DrawRectangle(_left, _top);
+      } else if(shape === this.options.useCase.shape){
+        shapeObj = this.DrawRectangle(_left, _top);
         textLeft = shapeObj.left + shapeObj.width / 2;
         textTop = shapeObj.top + shapeObj.height / 2;
       }
@@ -164,6 +507,226 @@
       });
       drawArea.add(group);
       return group;
+    },
+  
+    DrawRectangle: function(_left, _top){
+      var rect = new fabric.Rect({
+        left: _left,
+        top: _top,
+        width: this.options.useCase.size.width,
+        height: this.options.useCase.size.height,
+        rx: 10,
+        ry: 10,
+        fill: 'white',
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+      return rect;
+    },
+
+    DrawEllipse: function(_left, _top){
+      var ellipse = new fabric.Ellipse({
+        left: _left,
+        top: _top,
+        rx: this.options.useCase.size.width/2, // Horizontal radius
+        ry: this.options.useCase.size.height/2, // Vertical radius
+        fill: 'white',   
+        stroke: 'black', 
+        strokeWidth: 1, 
+      });
+      return ellipse;
+    },
+  
+    ConnectObject: function(person, useCase){
+      var to = new fabric.Point(tox, toy);
+
+      var personCenterX = person.left + person.width;
+      var personCenterY = person.top + person.height / 2;
+      var from = new fabric.Point(fromx, fromy);
+
+      var ellipseCenterX = useCase.left;
+      var ellipseCenterY = useCase.top + useCase.height / 2;
+      
+      var line = new fabric.Line([personCenterX, personCenterY, ellipseCenterX, ellipseCenterY], {
+          stroke: 'black',
+          strokeWidth: 1,
+      });
+      canvas.add(line);
+
+      person.on('moving', function () {
+        line.set({ x1: person.left + person.width / 2, y1: person.top + person.height / 2 });
+        canvas.renderAll();
+      });
+
+      useCase.on('moving', function () {
+        var newHeight = this.height * this.scaleY;
+        line.set({x2: useCase.left, y2: useCase.top + newHeight / 2});
+        canvas.renderAll();
+      });
+
+      useCase.on('scaling', function () {
+        var newHeight = this.height * this.scaleY;
+        line.set({x2: this.left, y2: this.top + newHeight / 2});
+        canvas.renderAll();
+      });
+    },
+
+    ConnectObjectByArrow: function(person, useCase){
+      var fromX = person.left + person.width;
+      var fromY = person.top + person.height / 2;
+
+      var toX = useCase.left;
+      var toY = useCase.top + useCase.height / 2;
+
+      if (person.left > useCase.left) {
+        fromX = person.left;
+        fromY = person.top + person.height / 2;
+        toX = useCase.left + useCase.width;
+        toY = useCase.top + useCase.height / 2;
+      } else {
+        fromX = person.left + person.width;
+        fromY = person.top + person.height / 2;
+        toX = useCase.left;
+        toY = useCase.top + useCase.height / 2;
+      }
+
+      var line = new fabric.Line([fromX, fromY, toX, toY], {
+          stroke: 'black',
+          strokeWidth: 1,
+      });
+
+      var angle = Math.atan2(toY - fromY, toX - fromX);
+
+      // Create triangle (arrow head)
+      var arrow = new fabric.Triangle({
+        left: toX,
+        top: toY,
+        originX: 'center',
+        originY: 'center',
+        width: this.options.arrowSize,
+        height: this.options.arrowSize,
+        fill: 'black',
+        angle: angle * (180 / Math.PI) + 90,
+        selectable: false
+      });
+      canvas.add(line, arrow);
+
+      person.on('moving', function () {
+        if (person.left > useCase.left) {
+          line.set({ 
+            x1: person.left, 
+            y1: person.top + person.height / 2,
+            x2: useCase.left + useCase.width, 
+            y2: useCase.top + useCase.height / 2
+          });
+        } else {
+          line.set({ 
+            x1: person.left + person.width, 
+            y1: person.top + person.height / 2, 
+            x2: useCase.left, 
+            y2: useCase.top + useCase.height / 2
+          });
+        }
+        //line.set({ x1: person.left + person.width, y1: person.top + person.height / 2 });
+        var newAngle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
+        arrow.set({ 'left': line.get('x2'), 'top': line.get('y2'), angle: newAngle * (180 / Math.PI) + 90 });
+        canvas.renderAll();
+      });
+
+      useCase.on('moving', function () {
+        var newHeight = this.height * this.scaleY;
+        if (person.left > useCase.left) {
+          line.set({
+            x1: person.left, 
+            y1: person.top + person.height / 2,
+            x2: useCase.left + useCase.width, 
+            y2: useCase.top + newHeight / 2});
+        } else {
+          line.set({
+            x1: person.left + person.width, 
+            y1: person.top + person.height / 2, 
+            x2: useCase.left, 
+            y2: useCase.top + newHeight / 2});
+        }
+        //line.set({x2: useCase.left, y2: useCase.top + newHeight / 2});
+        var newAngle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
+        arrow.set({ 'left': line.get('x2'), 'top': line.get('y2'), angle: newAngle * (180 / Math.PI) + 90 });
+        canvas.renderAll();
+      });
+
+      useCase.on('scaling', function () {
+        var newHeight = this.height * this.scaleY;
+        if (person.left > useCase.left) {
+          line.set({x2: useCase.left + useCase.width, y2: useCase.top + newHeight / 2});
+        } else {
+          line.set({x2: useCase.left, y2: useCase.top + newHeight / 2});
+        }
+        //line.set({x2: this.left, y2: this.top + newHeight / 2});
+        var newAngle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
+        arrow.set({ 'left': line.get('x2'), 'top': line.get('y2'), angle: newAngle * (180 / Math.PI) + 90 });
+        canvas.renderAll();
+      });
+    },
+    
+    CalculatePosition: function(from, to) {
+      const ucHeight = this.options.useCase.size.height;
+      const ucDistance = this.options.useCase.size.distance;
+      if (this.options.layout === 'both') {
+        const _mid = Math.ceil((to + from) / 2);
+        to = _mid;
+      }
+      let centerX = drawArea.width / 2;
+      let maxHeight = ucHeight * (to - from) + (ucHeight + ucDistance) * (to - from - 1);
+      let centerY = maxHeight / 2 - 70; //person half height
+      let ucX1 = 0;
+      let ucY1 = 10;
+      let ucX2 = 0;
+      let ucY2 = 10;
+      let ucPersonDistance = this.options.useCase.size.useCasePersonDistance;
+      if(this.options.layout === 'left'){
+        centerX = drawArea.width / 4 ;
+        ucX1 = centerX + ucPersonDistance;
+      } else if(this.options.layout === 'right'){
+        centerX = drawArea.width * 3 / 4;
+        ucX1 = centerX - this.options.useCase.size.width - ucPersonDistance;
+      } else if(this.options.layout === 'both'){
+        centerX = drawArea.width / 2;
+        ucX1 = centerX - this.options.useCase.size.width - ucPersonDistance;
+        ucX2 = centerX + ucPersonDistance;
+      }
+
+      return {
+        person: {
+          x: centerX - 20,  //person half width
+          y: centerY, 
+        },
+        ucStartPos: {
+          x1: ucX1,
+          y1: ucY1,
+          x2: ucX2,
+          y2: ucY2,
+        },
+      };
+    },
+  
+    UpdateButtons: function(_from, _to) {
+      if (this.options.drawButton.showDrawCurrent !== ''){
+        buttons.drawCurrent.innerHTML = `${_from} - ${_to}`;
+      }
+      if (_from >= this.options.useCase.ucPerPic) {
+        buttons.drawPrev.disabled = false;
+        buttons.drawPrev.dataset.from = _from - this.options.useCase.ucPerPic;
+        buttons.drawPrev.dataset.to = _from;
+      } else {
+        buttons.drawPrev.disabled = true;
+      }
+      if (_to < data.length) {
+        buttons.drawNext.disabled = false;
+        buttons.drawNext.dataset.from = _to;
+        buttons.drawNext.dataset.to = _to + this.options.useCase.ucPerPic;
+      } else {
+        buttons.drawNext.disabled = true;
+      }
     }
   }
   document.getElementById('excelFile').addEventListener('change', function(e) {
@@ -201,141 +764,212 @@
         tableData.push(rowData);
       }
 
-      lastX = 200;
-      lastY = 0;
       const lst = tableData.filter((item) => {
         return item[0] !== null && !isNaN(item[0]);
       }).map((item) => {
-          lastY += 100;
           return {
             id: item[0],
             name: item[2],
-            x: lastX,
-            y: lastY
           };
         return;
       });
-
       app.options = {
         originalFontSize: 16,
         _data: lst,
-        _drawArea: canvas
+        _drawArea: canvas,
+        drawButton: {
+          btnDrawStart: 'draw',
+          btnDrawNext: 'draw-next',
+          btnDrawPrev: 'draw-prev',
+          showDrawCurrent: 'current-draw',
+        },
+        useCase: {
+          size: {
+            width: parseInt(document.getElementById("uc-width").value),
+            height: parseInt(document.getElementById("uc-height").value),
+            distance: parseInt(document.getElementById("uc-distance").value),
+            useCasePersonDistance: parseInt(document.getElementById("uc-person-distance").value),
+          },
+          shape: document.getElementById("uc-shape-selector").value,
+          ucPerPic: parseInt(document.getElementById("uc-per-pic").value),
+        },
+        person: {
+          shape: document.getElementById("person-shape-selector").value,
+        },
+        layout: document.getElementById("left-right-layout-selector").value,
       };
       app.init();
       // app.start();
     };
     reader.readAsArrayBuffer(this.files[0]);
   }, false);
-  // Mock data:
-  // lst = [{
-  //   id: 1,
-  //   name: 'Use Case 1 are very very long and i want it wrap in an ellipse',
-  //   x: 200,
-  //   y: 100
-  // }, {
-  //   id: 2,
-  //   name: 'Use Case 2',
-  //   x: 200,
-  //   y: 200
-  // }, {
-  //   id: 3,
-  //   name: 'Use Case 3',
-  //   x: 200,
-  //   y: 300
-  // }, {
-  //   id: 4,
-  //   name: 'Use Case 4',
-  //   x: 200,
-  //   y: 400
-  // }];
 
   document.getElementById('draw').addEventListener('click',() => {
     const from = document.getElementById('from').value;
     const to = document.getElementById('to').value;
     app.draw(from, to);
+    if (document.getElementById('chk-render-direct').checked){
+      document.getElementById('render').click();
+    }
   });
   
-  document.getElementById('render').addEventListener('click',() => {
-    var dataURL = canvas.toDataURL({
-      format: 'png',
-      quality: 1
-    });
-    var imgElement = document.getElementById('canvas-img');    
-    imgElement.src = dataURL;
+  document.getElementById('draw-next').addEventListener('click',() => {
+    const fromNext = event.target.dataset.from;
+    const toNext = event.target.dataset.to;
+    app.draw(fromNext, toNext);
+    if (document.getElementById('chk-render-direct').checked){
+      document.getElementById('render').click();
+    }
+  });
+  
+  document.getElementById('draw-prev').addEventListener('click',() => {
+    const fromPrev = event.target.dataset.from;
+    const toPrev = event.target.dataset.to;
+    app.draw(fromPrev, toPrev);
+    if (document.getElementById('chk-render-direct').checked){
+      document.getElementById('render').click();
+    }
+  });
 
+  document.getElementById('render').addEventListener('click',() => {
+    if (document.getElementById('chkRenderObjectOnly').checked){
+      var objects = canvas.getObjects();
+      var minLeft = Infinity;
+      var minTop = Infinity;
+      var maxLeft = -Infinity;
+      var maxTop = -Infinity;
+
+      objects.forEach(function(obj) {
+          var boundingRect = obj.getBoundingRect();
+          minLeft = Math.min(minLeft, boundingRect.left);
+          minTop = Math.min(minTop, boundingRect.top);
+          maxLeft = Math.max(maxLeft, boundingRect.left + boundingRect.width);
+          maxTop = Math.max(maxTop, boundingRect.top + boundingRect.height);
+      });
+
+      var boundingRect = {
+          left: minLeft,
+          top: minTop,
+          width: maxLeft - minLeft,
+          height: maxTop - minTop
+      };
+      // Convert the bounding rect to a data URL
+      var dataURL = canvas.toDataURLWithCropping({
+          format: 'png',
+          quality: 1,
+          left: boundingRect.left,
+          top: boundingRect.top,
+          width: boundingRect.width,
+          height: boundingRect.height
+      });
+      
+      var imgElement = document.getElementById('canvas-img');    
+      imgElement.src = dataURL;
+    } else {
+      var dataURL = canvas.toDataURL({
+        format: 'png',
+        quality: 1
+      });
+      var imgElement = document.getElementById('canvas-img');    
+      imgElement.src = dataURL;
+    }
+    // var dataURL = canvas.toDataURL({
+    //   format: 'png',
+    //   quality: 1
+    // });
+
+    // Get the bounding rect of all objects on the canvas
+    // var boundingRect = canvas.getObjects().reduce(function (boundingRect, obj) {
+    //     return boundingRect.union(obj.getBoundingRect());
+    // }, new fabric.Rect());
+    // var objects = canvas.getObjects();
+    // var minLeft = Infinity;
+    // var minTop = Infinity;
+    // var maxLeft = -Infinity;
+    // var maxTop = -Infinity;
+
+    // objects.forEach(function(obj) {
+    //     var boundingRect = obj.getBoundingRect();
+    //     minLeft = Math.min(minLeft, boundingRect.left);
+    //     minTop = Math.min(minTop, boundingRect.top);
+    //     maxLeft = Math.max(maxLeft, boundingRect.left + boundingRect.width);
+    //     maxTop = Math.max(maxTop, boundingRect.top + boundingRect.height);
+    // });
+
+    // var boundingRect = {
+    //     left: minLeft,
+    //     top: minTop,
+    //     width: maxLeft - minLeft,
+    //     height: maxTop - minTop
+    // };
+    // // Convert the bounding rect to a data URL
+    // var dataURL = canvas.toDataURLWithCropping({
+    //     format: 'png',
+    //     quality: 1,
+    //     left: boundingRect.left,
+    //     top: boundingRect.top,
+    //     width: boundingRect.width,
+    //     height: boundingRect.height
+    // });
+    
+    // var imgElement = document.getElementById('canvas-img');    
+    // imgElement.src = dataURL;
     // Or, download the image as a file
     // var link = document.createElement('a');
     // link.download = 'canvas.png';
     // link.href = dataURL;
     // link.click();
   });
-
-  function ConnectObject(person, useCase){
-    var personCenterX = person.left + person.width;
-    var personCenterY = person.top + person.height / 2;
-
-    var ellipseCenterX = useCase.left;
-    var ellipseCenterY = useCase.top + useCase.height / 2;
-    
-    var line = new fabric.Line([personCenterX, personCenterY, ellipseCenterX, ellipseCenterY], {
-        stroke: 'black',
-        strokeWidth: 1,
-    });
-    canvas.add(line);
-
-    person.on('moving', function () {
-      line.set({ x1: person.left + person.width / 2, y1: person.top + person.height / 2 });
-      canvas.renderAll();
-    });
-
-    useCase.on('moving', function () {
-      var newHeight = this.height * this.scaleY;
-      line.set({x2: useCase.left, y2: useCase.top + newHeight / 2});
-      canvas.renderAll();
-    });
-
-    useCase.on('scaling', function () {
-      var newHeight = this.height * this.scaleY;
-      line.set({x2: this.left, y2: this.top + newHeight / 2});
-      canvas.renderAll();
-    });
-  }
-
   
+  document.getElementById('uc-shape-selector').addEventListener('change', () => {
+    app.options.useCase.shape = document.getElementById('uc-shape-selector').value;
+  });
 
-  function DrawEllipse(_left, _top){
-    var ellipse = new fabric.Ellipse({
-      left: _left,
-      top: _top,
-      rx: 50, // Horizontal radius
-      ry: 30, // Vertical radius
-      fill: 'white',   
-      stroke: 'black', 
-      strokeWidth: 1, 
-    });
-    return ellipse;
-  }
+  document.getElementById('person-shape-selector').addEventListener('change', () => {
+    app.options.person.shape = document.getElementById('person-shape-selector').value;
+  });
 
-  function DrawRectangle(_left, _top){
-    var rect = new fabric.Rect({
-      left: _left,
-      top: _top,
-      width: 100,
-      height: 60,
-      rx: 10,
-      ry: 10,
-      fill: 'white',
-      stroke: 'black',
-      strokeWidth: 1,
-    });
-    return rect;
+  document.getElementById("uc-width").addEventListener('change', () => {
+    app.options.useCase.size.width = parseInt(document.getElementById("uc-width").value);
+  });
 
-  }
+  document.getElementById("uc-height").addEventListener('change', () => {
+    app.options.useCase.size.height = parseInt(document.getElementById("uc-height").value);
+  });
 
+  document.getElementById("uc-distance").addEventListener('change', () => {
+    app.options.useCase.size.distance = parseInt(document.getElementById("uc-distance").value);
+  });
 
+  document.getElementById("uc-person-distance").addEventListener('change', () => {
+    app.options.useCase.size.useCasePersonDistance = parseInt(document.getElementById("uc-person-distance").value);
+  });
+
+  document.getElementById('left-right-layout-selector').addEventListener('change', () => {
+    app.options.layout = document.getElementById('left-right-layout-selector').value;
+  });
+
+  document.getElementById("uc-per-pic").addEventListener('change', () => {
+    app.options.useCase.ucPerPic = parseInt(document.getElementById("uc-per-pic").value);
+  });
+
+  fabric.Canvas.prototype.toDataURLWithCropping = function (options) {
+    var left = options.left,
+        top = options.top,
+        width = options.width,
+        height = options.height;
+
+    var data = this.contextContainer.getImageData(left, top, width, height);
+
+    var tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = width;
+    tmpCanvas.height = height;
+
+    var tmpCtx = tmpCanvas.getContext('2d');
+    tmpCtx.putImageData(data, 0, 0);
+
+    return tmpCanvas.toDataURL(options.format, options.quality);
+  };
 </script>
-        <script src="" async defer>
-          
-        </script>
-    </body>
+  </body>
 </html>

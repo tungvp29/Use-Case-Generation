@@ -1,0 +1,7 @@
+#config-area, #canvas {
+    border: 1px solid #dedede;
+}
+
+#canvas-img, #draw-area {
+    max-height: 80vh;
+}
