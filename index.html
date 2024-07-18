@@ -49,34 +49,67 @@
 
       <section id="action" class="container mb-3">
         <div class="row mb-3">
-          <div class="col-12">
-            <label for="excelFile">Input file data</label>
-            <input type="file" id="excelFile" class="form-control"/>
+          <label for="">Input configuration</label>
+          <div class="col-6 col-lg-3">
+            <!-- <label for="excelFile">Input file data</label> -->
+            <input type="file" id="excelFile" class="form-control" title="Input file data"/>
+          </div>
+          <div class="col-6 col-lg-3 mb-1">
+            <div class="input-group">
+              <label for="sheet-name-selector" class="input-group-text col-6 col-xl-4">Sheet name</label>
+              <!-- <input type="text" id="sheet-name" class="form-control" value="Requirements" placeholder="Name of the sheet contain use-cases's name. Example: Requirements"/> -->
+              <select name="" id="sheet-name-selector" class="form-control" title="Name of the sheet contain use-cases's name. Example: Requirements">
+              </select>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3 mb-1">
+            <div class="input-group">
+              <label for="start-cell" class="input-group-text col-6 col-xl-4">Start cell</label>
+              <input type="text" id="start-cell" class="form-control" value="B2" title="Example: B2 (column B, row 2)" placeholder="Example: B2 (column B, row 2)"/>
+            </div>            
+          </div>
+          <div class="col-6 col-lg-3 mb-1">
+            <div class="input-group">
+              <label for="end-cell" class="input-group-text col-6 col-xl-4">End cell</label>
+              <input type="text" id="end-cell" class="form-control" value="D" title="Example: D (to the last row of column D)" placeholder="Example: D (to the last row of column D)"/>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3 mb-1">
+            <div class="input-group">
+              <label for="id-col" class="input-group-text col-6 col-xl-4">Index column</label>
+              <input type="number" id="id-col" class="form-control" value="0" title="Index of column in [Start cell:End cell] table. Example: table [B2:DD], index of column B is 0, index of column C is 1"/>
+            </div>            
+          </div>
+          <div class="col-6 col-lg-3 mb-1">
+            <div class="input-group">
+              <label for="name-col" class="input-group-text col-6 col-xl-4">Use case text column</label>
+              <input type="number" id="name-col" class="form-control" value="2" title="Index of column in [Start cell:End cell] table. Example: table [B2:DD], index of column B is 0, index of column D is 2"/>
+            </div>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-6 col-lg-3">
             <div class="input-group">
-              <label for="from" class="input-group-text col-3">From</label>
-              <input type="number" name="" id="from" value="0" class="form-control">
+              <label for="from" class="input-group-text col-6 col-xl-3">From</label>
+              <input type="number" name="" id="from" value="1" class="form-control">
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <div class="input-group">
-              <label for="to" class="input-group-text col-3">To</label>
+              <label for="to" class="input-group-text col-6 col-xl-3">To</label>
               <input type="number" name="" id="to" value="8" class="form-control">
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <div class="input-group">
-              <label for="uc-per-pic" class="input-group-text col-7">Usecase per picture</label>
+              <label for="uc-per-pic" class="input-group-text col-6 col-lg-8">Usecase per picture</label>
               <input type="number" name="" id="uc-per-pic" value="8" class="form-control">
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <!-- <label for="">Current draw: <span id="current-draw">0</span></label> -->
             <div class="input-group">
-              <label for="current-draw" class="input-group-text col-7">Current draw</label>
+              <label for="current-draw" class="input-group-text col-6 col-lg-8">Current draw</label>
               <input type="text" disabled name="" id="current-draw" value="0" class="form-control">
             </div>
 
@@ -172,6 +205,7 @@
   var panning = false;
   var lastPosX = 0;
   var lastPosY = 0;
+  let workbook = null;
   const canvas = new fabric.Canvas('canvas');
 
   canvas.on('mouse:down', function (e) {
@@ -297,9 +331,6 @@
       if (this.options.layout === 'both'){
         ucStartX2 = calculatedPosition.ucStartPos.x2;
         ucStartY2 = calculatedPosition.ucStartPos.y2;
-        if (this.options.drawButton.showDrawCurrent !== ''){
-          buttons.drawCurrent.innerHTML = `${_from} - ${_to}`;
-        }
 
         const _mid = Math.ceil((_to + _from) / 2);
         data.slice(_from, _mid).forEach((item) => {
@@ -711,7 +742,7 @@
   
     UpdateButtons: function(_from, _to) {
       if (this.options.drawButton.showDrawCurrent !== ''){
-        buttons.drawCurrent.innerHTML = `${_from} - ${_to}`;
+        buttons.drawCurrent.value = `${_from} - ${_to}`;
       }
       if (_from >= this.options.useCase.ucPerPic) {
         buttons.drawPrev.disabled = false;
@@ -733,79 +764,88 @@
     var reader = new FileReader();
     reader.onload = function(e) {
       var data = new Uint8Array(e.target.result);
-      var workbook = XLSX.read(data, {type: 'array'});
+      var wb = XLSX.read(data, {type: 'array'});
 
       // Get the first worksheet
-      //var sheet_name_list = workbook.SheetNames;
-      // var worksheet = workbook.Sheets[sheet_name_list[0]];
-      var worksheet = workbook.Sheets['Requirements'];
-
-      // // Convert the worksheet to JSON
-      // var data = XLSX.utils.sheet_to_json(worksheet);
-      
-      // Get the range of cells for the table
-      var startCell = 'B2';
-      var endCell = 'D' + worksheet['!ref'].split(':')[1].replace(/[A-Z]/g, ''); // Get the last row number of column D
-      var range = XLSX.utils.decode_range(startCell + ':' + endCell);
-
-      // Get the cells in the range
-      var tableData = [];
-      for(var R = range.s.r; R <= range.e.r; ++R) {
-        var rowData = [];
-        for(var C = range.s.c; C <= range.e.c; ++C) {
-          var cell_address = {c:C, r:R};
-          var cell_ref = XLSX.utils.encode_cell(cell_address);
-          if(worksheet[cell_ref]) {
-            rowData.push(worksheet[cell_ref].v);
-          } else {
-            rowData.push(null);          
-          }
-        }
-        tableData.push(rowData);
-      }
-
-      const lst = tableData.filter((item) => {
-        return item[0] !== null && !isNaN(item[0]);
-      }).map((item) => {
-          return {
-            id: item[0],
-            name: item[2],
-          };
-        return;
+      document.getElementById('sheet-name-selector').innerHTML = '';
+      var sheet_name_list = wb.SheetNames;
+      sheet_name_list.forEach((name) => {
+        document.getElementById('sheet-name-selector').innerHTML += `<option value="${name}" ${name == "Requirements" ? "selected": ""}>${name}</option>`;
       });
-      app.options = {
-        originalFontSize: 16,
-        _data: lst,
-        _drawArea: canvas,
-        drawButton: {
-          btnDrawStart: 'draw',
-          btnDrawNext: 'draw-next',
-          btnDrawPrev: 'draw-prev',
-          showDrawCurrent: 'current-draw',
-        },
-        useCase: {
-          size: {
-            width: parseInt(document.getElementById("uc-width").value),
-            height: parseInt(document.getElementById("uc-height").value),
-            distance: parseInt(document.getElementById("uc-distance").value),
-            useCasePersonDistance: parseInt(document.getElementById("uc-person-distance").value),
-          },
-          shape: document.getElementById("uc-shape-selector").value,
-          ucPerPic: parseInt(document.getElementById("uc-per-pic").value),
-        },
-        person: {
-          shape: document.getElementById("person-shape-selector").value,
-        },
-        layout: document.getElementById("left-right-layout-selector").value,
-      };
-      app.init();
-      // app.start();
+      // var worksheet = workbook.Sheets[sheet_name_list[0]];
+      workbook = wb;
     };
     reader.readAsArrayBuffer(this.files[0]);
   }, false);
 
+  function WorkbookRead(_workbook){
+    // var worksheet = workbook.Sheets['Requirements'];
+    var worksheet = _workbook.Sheets[document.getElementById('sheet-name-selector').value];
+
+    // // Convert the worksheet to JSON
+    // var data = XLSX.utils.sheet_to_json(worksheet);
+    
+    // Get the range of cells for the table
+    var startCell = document.getElementById('start-cell').value;
+    var endCell = document.getElementById('end-cell').value + worksheet['!ref'].split(':')[1].replace(/[A-Z]/g, ''); // Get the last row number of column D
+    var range = XLSX.utils.decode_range(startCell + ':' + endCell);
+
+    // Get the cells in the range
+    var tableData = [];
+    for(var R = range.s.r; R <= range.e.r; ++R) {
+      var rowData = [];
+      for(var C = range.s.c; C <= range.e.c; ++C) {
+        var cell_address = {c:C, r:R};
+        var cell_ref = XLSX.utils.encode_cell(cell_address);
+        if(worksheet[cell_ref]) {
+          rowData.push(worksheet[cell_ref].v);
+        } else {
+          rowData.push(null);
+        }
+      }
+      tableData.push(rowData);
+    }
+    
+    const lst = tableData.filter((item) => {
+      return item[0] !== null && !isNaN(item[0]) && item[0] !== '';
+    }).map((item) => {        
+        return {
+          id: item[document.getElementById('id-col').value],
+          name: item[document.getElementById('name-col').value],
+        };
+      return;
+    });
+    
+    app.options = {
+      originalFontSize: 16,
+      _data: lst,
+      _drawArea: canvas,
+      drawButton: {
+        btnDrawStart: 'draw',
+        btnDrawNext: 'draw-next',
+        btnDrawPrev: 'draw-prev',
+        showDrawCurrent: 'current-draw',
+      },
+      useCase: {
+        size: {
+          width: parseInt(document.getElementById("uc-width").value),
+          height: parseInt(document.getElementById("uc-height").value),
+          distance: parseInt(document.getElementById("uc-distance").value),
+          useCasePersonDistance: parseInt(document.getElementById("uc-person-distance").value),
+        },
+        shape: document.getElementById("uc-shape-selector").value,
+        ucPerPic: parseInt(document.getElementById("uc-per-pic").value),
+      },
+      person: {
+        shape: document.getElementById("person-shape-selector").value,
+      },
+      layout: document.getElementById("left-right-layout-selector").value,
+    };
+    app.init();
+  }
   document.getElementById('draw').addEventListener('click',() => {
-    const from = document.getElementById('from').value;
+    WorkbookRead(workbook);
+    const from = parseInt(document.getElementById('from').value) - 1;
     const to = document.getElementById('to').value;
     app.draw(from, to);
     if (document.getElementById('chk-render-direct').checked){
@@ -873,52 +913,6 @@
       var imgElement = document.getElementById('canvas-img');    
       imgElement.src = dataURL;
     }
-    // var dataURL = canvas.toDataURL({
-    //   format: 'png',
-    //   quality: 1
-    // });
-
-    // Get the bounding rect of all objects on the canvas
-    // var boundingRect = canvas.getObjects().reduce(function (boundingRect, obj) {
-    //     return boundingRect.union(obj.getBoundingRect());
-    // }, new fabric.Rect());
-    // var objects = canvas.getObjects();
-    // var minLeft = Infinity;
-    // var minTop = Infinity;
-    // var maxLeft = -Infinity;
-    // var maxTop = -Infinity;
-
-    // objects.forEach(function(obj) {
-    //     var boundingRect = obj.getBoundingRect();
-    //     minLeft = Math.min(minLeft, boundingRect.left);
-    //     minTop = Math.min(minTop, boundingRect.top);
-    //     maxLeft = Math.max(maxLeft, boundingRect.left + boundingRect.width);
-    //     maxTop = Math.max(maxTop, boundingRect.top + boundingRect.height);
-    // });
-
-    // var boundingRect = {
-    //     left: minLeft,
-    //     top: minTop,
-    //     width: maxLeft - minLeft,
-    //     height: maxTop - minTop
-    // };
-    // // Convert the bounding rect to a data URL
-    // var dataURL = canvas.toDataURLWithCropping({
-    //     format: 'png',
-    //     quality: 1,
-    //     left: boundingRect.left,
-    //     top: boundingRect.top,
-    //     width: boundingRect.width,
-    //     height: boundingRect.height
-    // });
-    
-    // var imgElement = document.getElementById('canvas-img');    
-    // imgElement.src = dataURL;
-    // Or, download the image as a file
-    // var link = document.createElement('a');
-    // link.download = 'canvas.png';
-    // link.href = dataURL;
-    // link.click();
   });
   
   document.getElementById('uc-shape-selector').addEventListener('change', () => {
