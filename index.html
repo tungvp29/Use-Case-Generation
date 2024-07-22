@@ -3,7 +3,7 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
+<html lang="en">
   <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,45 +18,50 @@
       <!--[if lt IE 7]>
           <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
+      <div class="container">
+        <div class="col-1 offset-11">
+          <button id="lang-vi" class="btn">VI</button>
+          <button id="lang-en" class="btn">EN</button>
+        </div>
+      </div>
       <section id="presentation" class="container mb-3">
         <div class="row">
           <div id="draw-area" class="col-12 col-xxl-6">
             <div class="row">
               <div class="col-12">
-                <h2>Draw Area</h2>
+                <h2 data-translate="area-draw-title">Draw Area</h2>
               </div>
             </div>
             <div class="row">
                 <canvas id="canvas" width="636" height="550"></canvas>
             </div>
-            <p class="fst-italic">(Hold Shift to move around)</p>
+            <p class="fst-italic" data-translate="area-draw-notice">(Hold Shift to move around)</p>
           </div>
           <div id="render-area" class="col-12 col-xxl-6">
             <div class="row">
               <div class="col-12">
-                <h2>Render Area</h2>
+                <h2 data-translate="area-render-title">Render Area</h2>
               </div>
             </div>
             <div class="row">
               <div class="col-12">
-                <img id="canvas-img" class="" src="OIG4.jpg" alt="Image from canvas, check render to automate transfrom canvas to image">
+                <img id="canvas-img" class="" src="OIG4.jpg" alt="Image from canvas, check render to automate transfrom canvas to image" >
               </div>
             </div>
           </div>
         </div>
-
       </section>
 
       <section id="action" class="container mb-3">
         <div class="row mb-3">
-          <label for="">Input configuration</label>
+          <label for="" data-translate="input-label">Input configuration</label>
           <div class="col-6 col-lg-3">
             <!-- <label for="excelFile">Input file data</label> -->
             <input type="file" id="excelFile" class="form-control" title="Input file data"/>
           </div>
           <div class="col-6 col-lg-3 mb-1">
             <div class="input-group">
-              <label for="sheet-name-selector" class="input-group-text col-6 col-xl-4">Sheet name</label>
+              <label for="sheet-name-selector" class="input-group-text col-6 col-xl-4" data-translate="input-sheetname-label">Sheet name</label>
               <!-- <input type="text" id="sheet-name" class="form-control" value="Requirements" placeholder="Name of the sheet contain use-cases's name. Example: Requirements"/> -->
               <select name="" id="sheet-name-selector" class="form-control" title="Name of the sheet contain use-cases's name. Example: Requirements">
               </select>
@@ -64,25 +69,25 @@
           </div>
           <div class="col-6 col-lg-3 mb-1">
             <div class="input-group">
-              <label for="start-cell" class="input-group-text col-6 col-xl-4">Start cell</label>
+              <label for="start-cell" class="input-group-text col-6 col-xl-4" data-translate="input-startcell-label">Start cell</label>
               <input type="text" id="start-cell" class="form-control" value="B2" title="Example: B2 (column B, row 2)" placeholder="Example: B2 (column B, row 2)"/>
             </div>            
           </div>
           <div class="col-6 col-lg-3 mb-1">
             <div class="input-group">
-              <label for="end-cell" class="input-group-text col-6 col-xl-4">End cell</label>
+              <label for="end-cell" class="input-group-text col-6 col-xl-4" data-translate="input-endcell-label">End cell</label>
               <input type="text" id="end-cell" class="form-control" value="D" title="Example: D (to the last row of column D)" placeholder="Example: D (to the last row of column D)"/>
             </div>
           </div>
           <div class="col-6 col-lg-3 mb-1">
             <div class="input-group">
-              <label for="id-col" class="input-group-text col-6 col-xl-4">Index column</label>
+              <label for="id-col" class="input-group-text col-6 col-lg-8" data-translate="input-idcol-label">Index column</label>
               <input type="number" id="id-col" class="form-control" value="0" title="Index of column in [Start cell:End cell] table. Example: table [B2:DD], index of column B is 0, index of column C is 1"/>
             </div>            
           </div>
           <div class="col-6 col-lg-3 mb-1">
             <div class="input-group">
-              <label for="name-col" class="input-group-text col-6 col-xl-4">Use case text column</label>
+              <label for="name-col" class="input-group-text col-6 col-lg-8" data-translate="input-namecol-label">Use case text column</label>
               <input type="number" id="name-col" class="form-control" value="2" title="Index of column in [Start cell:End cell] table. Example: table [B2:DD], index of column B is 0, index of column D is 2"/>
             </div>
           </div>
@@ -90,26 +95,26 @@
         <div class="row mb-3">
           <div class="col-6 col-lg-3">
             <div class="input-group">
-              <label for="from" class="input-group-text col-6 col-xl-3">From</label>
+              <label for="from" class="input-group-text col-6 col-lg-8" data-translate="input-from-label">From</label>
               <input type="number" name="" id="from" value="1" class="form-control">
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <div class="input-group">
-              <label for="to" class="input-group-text col-6 col-xl-3">To</label>
+              <label for="to" class="input-group-text col-6 col-lg-8" data-translate="input-to-label">To</label>
               <input type="number" name="" id="to" value="8" class="form-control">
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <div class="input-group">
-              <label for="uc-per-pic" class="input-group-text col-6 col-lg-8">Usecase per picture</label>
+              <label for="uc-per-pic" class="input-group-text col-6 col-lg-8" data-translate="input-uc-per-pic-label">Usecase per picture</label>
               <input type="number" name="" id="uc-per-pic" value="8" class="form-control">
             </div>
           </div>
           <div class="col-6 col-lg-3">
             <!-- <label for="">Current draw: <span id="current-draw">0</span></label> -->
             <div class="input-group">
-              <label for="current-draw" class="input-group-text col-6 col-lg-8">Current draw</label>
+              <label for="current-draw" class="input-group-text col-6 col-lg-8" data-translate="input-current-draw-label">Current draw</label>
               <input type="text" disabled name="" id="current-draw" value="0" class="form-control">
             </div>
 
@@ -117,13 +122,13 @@
         </div>
         <div class="row mb-3">
           <div class="col-4">
-            <button id="draw" class="btn btn-primary">Draw</button>
-            <button id="draw-next" class="btn btn-secondary" data-from="" data-to="">Draw next</button>
-            <button id="draw-prev" class="btn btn-secondary" data-from="" data-to="">Draw previous</button>
+            <button id="draw" class="btn btn-primary" data-translate="input-btn-draw">Draw</button>
+            <button id="draw-next" class="btn btn-secondary" data-from="" data-to="" data-translate="input-btn-draw-next">Draw next</button>
+            <button id="draw-prev" class="btn btn-secondary" data-from="" data-to="" data-translate="input-btn-draw-prev">Draw previous</button>
           </div>
           <div class="col-4">
             <div class="input-group mb-3">
-              <button id="render" class="btn btn-info">Render</button>
+              <button id="render" class="btn btn-info" data-translate="input-btn-render">Render</button>
               <div class="input-group-text">
                 <input id="chk-render-direct" class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
               </div>
@@ -131,47 +136,47 @@
             
           </div>
           <div class="col-4">
-            <button id="render" class="btn btn-secondary">Export</button>
+            <button id="render" class="btn btn-secondary" data-translate="input-btn-export">Export</button>
           </div>
         </div>
       </section>
       <section id="configuration" class="container mb-3">
         <div class="row">
           <div id="uc-size" class="col-12 col-lg-6">
-            <label for="uc-size">Use-case Size</label>
+            <label for="uc-size" data-translate="uc-title">Use-case Size</label>
             <div class="input-group">
-              <label for="uc-width" class="input-group-text col-5">Use-case Width</label>
+              <label for="uc-width" class="input-group-text col-5" data-translate="uc-width">Use-case Width</label>
               <input type="number" name="" id="uc-width" value="200" class="form-control">
             </div>
             <div class="input-group">
-              <label for="uc-height" class="input-group-text col-5">Use-case Height</label>
+              <label for="uc-height" class="input-group-text col-5" data-translate="uc-height">Use-case Height</label>
               <input type="number" name="" id="uc-height" value="40" class="form-control">
             </div>
             <div class="input-group">
-              <label for="uc-distance" class="input-group-text col-5">Distance between 2 UC</label>
+              <label for="uc-distance" class="input-group-text col-5" data-translate="uc-distance">Distance between 2 UC</label>
               <input type="number" name="" id="uc-distance" value="20" class="form-control">
             </div>
             <div class="input-group">
-              <label for="uc-person-distance" class="input-group-text col-5">Distance between UC and person</label>
+              <label for="uc-person-distance" class="input-group-text col-5" data-translate="uc-person-distance">Distance between UC and person</label>
               <input type="number" name="" id="uc-person-distance" value="100" class="form-control">
             </div>
           </div>
           <div id="uc-shape" class="col-12 col-lg-6">
             <div id="uc-shape">
-              <label for="uc-shape-selector">Use-case shape</label>
+              <label for="uc-shape-selector" data-translate="uc-shape-selector">Use-case shape</label>
               <div class="input-group">
                 <select name="" id="uc-shape-selector" class="form-control">
-                  <option value="rectangle">Rectangle</option>
-                  <option value="ellipse">Ellipse</option>
+                  <option value="rectangle" data-translate="uc-shape-selector-rectangle">Rectangle</option>
+                  <option value="ellipse" data-translate="uc-shape-selector-ellipse">Ellipse</option>
                 </select>
               </div>
             </div>
             <div id="person-shape">
-              <label for="person-shape-selector">Person shape</label>
+              <label for="person-shape-selector" data-translate="person-shape-selector">Person shape</label>
               <div class="input-group">
                 <select name="" id="person-shape-selector" class="form-control">
-                  <option value="thin">Thin body</option>
-                  <option value="bigger">Bigger body</option>
+                  <option value="thin" data-translate="person-shape-selector-thin">Thin body</option>
+                  <option value="bigger" data-translate="person-shape-selector-bigger">Bigger body</option>
                 </select>
               </div>
             </div>
@@ -180,18 +185,18 @@
 
 
         <div id="left-right-layout" class="col-12">
-          <label for="left-right-layout">Left-Right Layout</label>
+          <label for="left-right-layout" data-translate="left-right-layout">Left-Right Layout</label>
           <select name="" id="left-right-layout-selector" class="form-control">
-            <option value="left">Left side</option>
-            <option value="right" >Right side</option>
-            <option value="both" selected>Both side</option>
+            <option value="left" data-translate="left-right-layout-selector-left">Left side</option>
+            <option value="right" data-translate="left-right-layout-selector-right">Right side</option>
+            <option value="both" selected data-translate="left-right-layout-selector-both">Both side</option>
           </select>
         </div>
         <div id="render-layout" class="col-12">
-          <label for="render-layout">Render Layout</label>
+          <label for="render-layout" data-translate="render-layout">Render Layout</label>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="chkRenderObjectOnly" checked>
-            <label class="form-check-label" for="chkRenderObjectOnly">
+            <label class="form-check-label" for="chkRenderObjectOnly" data-translate="render-layout-label">
               Only render the objects area in canvas
             </label>
           </div>
@@ -200,6 +205,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="lang.js"></script>
 <script>
   var originalFontSize = 14;
   var panning = false;
@@ -945,6 +951,14 @@
 
   document.getElementById("uc-per-pic").addEventListener('change', () => {
     app.options.useCase.ucPerPic = parseInt(document.getElementById("uc-per-pic").value);
+  });
+
+  document.getElementById('lang-vi').addEventListener('click', () => {
+    changeLanguage('vi');
+  });
+
+  document.getElementById('lang-en').addEventListener('click', () => {
+    changeLanguage('en');
   });
 
   fabric.Canvas.prototype.toDataURLWithCropping = function (options) {
