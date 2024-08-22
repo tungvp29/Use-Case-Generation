@@ -247,7 +247,21 @@ const app = {
           originX: 'center',
           originY: 'center'
       });
-      var person = new fabric.Group([head, body, leftArm, rightArm, leftLeg, rightLeg, path], {
+
+      const text = new fabric.Textbox(_text, {
+        originX: 'center',
+        originY: 'center',
+        left: x, // Same as ellipse center X
+        top: y + 170, // Same as ellipse center Y
+        fontSize: originalFontSize,
+        fill: 'black',
+        //width: body.width - 10,
+        textAlign: 'center',
+        //height: 50,
+        //overflow: 'ellipse' // Truncate the text with an ellipsis when it overflows the text box
+      });
+
+      var person = new fabric.Group([head, body, leftArm, rightArm, leftLeg, rightLeg, text], {
           left: x-30,
           top: y
       });
