@@ -158,10 +158,10 @@ const app = {
         originX: 'center',
         originY: 'center',
         left: 100, // Same as ellipse center X
-        top: 255, // Same as ellipse center Y
+        top: 260, // Same as ellipse center Y
         fontSize: originalFontSize,
         fill: 'black',
-        //width: body.width - 10,
+        width: body.width + 60,
         textAlign: 'center',
         //height: 50,
         //overflow: 'ellipse' // Truncate the text with an ellipsis when it overflows the text box
